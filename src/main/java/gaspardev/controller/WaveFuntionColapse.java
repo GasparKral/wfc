@@ -36,6 +36,10 @@ public class WaveFuntionColapse {
         return this.tiles[index];
     }
 
+    public void setNewTileDir(String path) {
+        this.tilesDir = new File(path);
+    }
+
     private void loadTiles() {
 
         loadTilesRotations(this.conexcions);
@@ -136,17 +140,4 @@ public class WaveFuntionColapse {
         return this.grid.getCell(x, y);
     }
 
-    // public void drawGrid() {
-
-    // Cell tempCell;
-
-    // tempCell = this.getTheLessEntropyCell();
-    // tempCell.colpasCell(tempCell.getRandomEntropieValueTile());
-    // for (Cell neibors : tempCell.getNeighbors()) {
-    // if (neibors != null) {
-    // updateEntropie(neibors,);
-    // }
-    // }
-
-    // }
 }

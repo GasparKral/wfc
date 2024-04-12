@@ -8,9 +8,6 @@ import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     public static void main(String[] args) {
@@ -21,10 +18,9 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
 
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/Main.fxml"));
             Scene scene = new Scene(root);
-            String cssStyles = this.getClass().getResource("test.css").toExternalForm();
-            scene.getStylesheets().add(cssStyles);
+            scene.getStylesheets().add(this.getClass().getResource("/css/styles.css").toExternalForm());
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
