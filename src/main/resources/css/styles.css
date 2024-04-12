@@ -1,0 +1,10 @@
+.root {
+    -fx-background-color: #1c1c1c;
+    -fx-font-family: 'Roboto';
+}
+
+#appTitle {
+    -fx-font-size: 30;
+    -fx-alignment: center;
+    -fx-text-fill: white;
+}
