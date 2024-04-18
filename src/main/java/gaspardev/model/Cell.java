@@ -1,7 +1,12 @@
 package gaspardev.model;
 
-public class Cell {
+import java.io.Serializable;
+import java.util.Arrays;
 
+public class Cell implements Serializable {
+
+    private int posX;
+    private int posY;
     private boolean isColapsed = false;
     private Tile colapsedTile;
     private Cell[] neighbors = new Cell[4];
@@ -15,12 +20,22 @@ public class Cell {
         this.entropy = entropy;
     }
 
+    public Cell(int posX, int posY) {
+        this.posX = posX;
+        this.posY = posY;
+    }
+
     public boolean isColapsed() {
         return this.isColapsed;
     }
 
     public void setColapsed(boolean isColapsed) {
         this.isColapsed = isColapsed;
+    }
+
+    public Cell setColapsedR(boolean isColapsed) {
+        this.isColapsed = isColapsed;
+        return this;
     }
 
     public void colapseTile(Tile colapsTile) {
@@ -34,6 +49,22 @@ public class Cell {
 
     public Cell[] getNeighbors() {
         return this.neighbors;
+    }
+
+    public void setPosX(int posX) {
+        this.posX = posX;
+    }
+
+    public void setPosY(int posY) {
+        this.posY = posY;
+    }
+
+    public int getPosX() {
+        return this.posX;
+    }
+
+    public int getPosY() {
+        return this.posY;
     }
 
     public void setNeighbors(Cell[] neighbors) {
@@ -52,6 +83,10 @@ public class Cell {
         return this.entropy;
     }
 
+    public static int getEntropyLenght(Cell cell) {
+        return cell.getEntropy().length;
+    }
+
     public void setEntropy(Tile[] entropy) {
         this.entropy = entropy;
     }
@@ -59,6 +94,10 @@ public class Cell {
     public void colpasCell(Tile colapsTile) {
         this.isColapsed = true;
         this.colapsedTile = colapsTile;
+    }
+
+    public void updateEntropie(Tile deleteEntropy) {
+        this.entropy = Arrays.stream(this.entropy).filter(tile -> tile != deleteEntropy).toArray(Tile[]::new);
     }
 
     public Tile getRandomEntropieValueTile() {
@@ -82,12 +121,13 @@ public class Cell {
     @Override
     public String toString() {
         return "{" +
-                " isColapsed='" + isColapsed() + "'" +
-                ", colapsedTile='" + getColapsedTile() != null ? getColapsedTile().getImg()
-                        : "null" + "'" +
-                                ", neighbors='" + getNeighbors() + "'" +
-                                ", entropy='" + getEntropy() + "'" +
-                                "}";
+                " posX='" + getPosX() + "'" +
+                ", posY='" + getPosY() + "'" +
+                ", isColapsed='" + isColapsed() + "'" +
+                ", colapsedTile='" + getColapsedTile() + "'" +
+                ", neighbors='" + getNeighbors() + "'" +
+                ", entropy='" + getEntropy() + "'" +
+                "}";
     }
 
 }

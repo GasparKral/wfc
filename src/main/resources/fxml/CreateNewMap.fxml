@@ -5,13 +5,10 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-   prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21"
-   xmlns:fx="http://javafx.com/fxml/1" fx:controller="gaspardev.controller.InterfaceController">
+   prefHeight="400.0" prefWidth="655.0" xmlns="http://javafx.com/javafx/21"
+   xmlns:fx="http://javafx.com/fxml/1" fx:controller="gaspardev.controller.CreateNewMapController">
    <children>
-      <Button fx:id="goBack" layoutX="14.0" layoutY="14.0" mnemonicParsing="false"
-         onAction="#goBack" text="&lt;-" />
       <Label layoutX="125.0" layoutY="67.0" text="Altura: " />
       <TextField fx:id="inputHeight" layoutX="170.0" layoutY="63.0" prefHeight="25.0"
          prefWidth="78.0" />
@@ -19,10 +16,23 @@
       <TextField fx:id="inputWidth" layoutX="170.0" layoutY="104.0" prefHeight="25.0"
          prefWidth="78.0" />
       <Label layoutX="44.0" layoutY="151.0" text="Dirección de Patrones:" />
-      <TextField id="currentTilesDir" fx:id="inputWidth1" editable="false" layoutX="170.0"
-         layoutY="147.0" prefHeight="25.0" prefWidth="199.0" text="/src/main/resources/images/Tiles" />
-      <Button layoutX="383.0" layoutY="147.0" mnemonicParsing="false" text="Nueva Ruta" />
-      <Button layoutX="476.0" layoutY="147.0" mnemonicParsing="false" text="Cargar Patrones" />
-      <Button layoutX="242.0" layoutY="349.0" mnemonicParsing="false" text="Crear Nuevo Mapa" />
+      <TextField id="currentTilesDir" fx:id="currentTilesDir" editable="false" layoutX="170.0"
+         layoutY="147.0" prefHeight="25.0" prefWidth="299.0" text="" />
+      <Button fx:id="rutaDir" layoutX="391.0" layoutY="147.0" mnemonicParsing="false"
+         onAction="#selectDirectory" text="Nueva Ruta" />
+      <Button layoutX="476.0" layoutY="147.0" mnemonicParsing="false" onAction="#loadTiles"
+         text="Cargar Patrones" />
+      <Button layoutX="270.0" layoutY="351.0" mnemonicParsing="false" onAction="#goNewMap"
+         text="Crear Nuevo Mapa" />
+      <Label layoutX="62.0" layoutY="192.0" text="Cargar Conexiones:" />
+      <TextField id="currentDirConexions" fx:id="currentDirConexions" editable="false"
+         layoutX="170.0" layoutY="188.0" prefHeight="25.0" prefWidth="299.0" text="" />
+      <Button fx:id="rutaConec" layoutX="391.0" layoutY="188.0" mnemonicParsing="false"
+         onAction="#selectConexions" text="Nueva Ruta" />
+      <Button layoutX="476.0" layoutY="188.0" mnemonicParsing="false" onAction="#loadTilesRotations"
+         text="Cargar Conexiones" />
+      <Label id="errorShowLabel" fx:id="errorShowLabel" layoutX="43.0" layoutY="240.0"
+         prefHeight="40.0"
+         prefWidth="554.0" />
    </children>
 </AnchorPane>

@@ -1,10 +1,12 @@
 package gaspardev.model;
 
-public class Tile {
+import java.io.Serializable;
+
+public class Tile implements Serializable {
 
     private int rotation = 0;
     private String img;
-    private short[] conexcions = { 1, 1, 0, 1 };
+    private Conexion conexions = new Conexion(new short[] { 0, 0, 0, 0 });
     private short weight = 0;
 
     public Tile() {
@@ -17,10 +19,10 @@ public class Tile {
         this.weight = weight;
     }
 
-    public Tile(int rotation, String img, short[] conexcions, short weight) {
+    public Tile(int rotation, String img, Conexion conexcions, short weight) {
         this.rotation = rotation;
         this.img = img;
-        this.conexcions = conexcions;
+        this.conexions = conexcions;
         this.weight = weight;
     }
 
@@ -41,14 +43,14 @@ public class Tile {
     }
 
     public short[] getConexcions() {
-        return this.conexcions;
+        return this.conexions.getRotations();
     }
 
     public String getConexions() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        for (int i = 0; i < conexcions.length; i++) {
-            sb.append(conexcions[i]);
+        for (int i = 0; i < this.conexions.getRotations().length; i++) {
+            sb.append(conexions.getRotations()[i]);
             sb.append(", ");
         }
         sb.append("]");
@@ -56,7 +58,7 @@ public class Tile {
     }
 
     public void setConexcions(short[] conexcions) {
-        this.conexcions = conexcions;
+        this.conexions.setRotations(conexcions);
     }
 
     public short getWeight() {

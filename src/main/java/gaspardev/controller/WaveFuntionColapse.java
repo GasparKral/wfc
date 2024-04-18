@@ -3,33 +3,45 @@ package gaspardev.controller;
 import gaspardev.model.Grid;
 import gaspardev.model.Tile;
 import gaspardev.model.Cell;
+import gaspardev.model.Conexion;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.Comparator;
+import java.util.ArrayList;
 
 public class WaveFuntionColapse {
 
+    protected File tilesDir = new File("C:/programar/wfc/src/main/resources/images/Tiles");
+    protected File conexionsFile = new File("C:/programar/wfc/src/main/resources/data/Conexions/conexions.csv");
+    protected File[] tilesFiles;
+
     private Grid grid;
-    File tilesDir = new File("/src/main/resources/images/Tiles");
-    File[] tilesFiles = tilesDir.listFiles();
     private Tile[] tiles;
-    private short[] conexcions[];
+    private Conexion[] conexcions;
 
     public WaveFuntionColapse() {
-        grid = new Grid();
-        loadManualTiles();
-    }
 
-    public WaveFuntionColapse(Grid grid) {
-        this.grid = grid;
-        loadTiles();
     }
 
     public int getNumberOfTiles() {
-        return this.tilesFiles.length;
+        return this.tilesDir.listFiles().length;
     }
 
-    public void setNewPath(String path) {
+    public void setDimensions(int width, int height) {
+        this.grid = new Grid(width, height);
+    }
+
+    public void setNewTilePath(String path) {
         this.tilesDir = new File(path);
+    }
+
+    public void setNewConexionsPath(String path) {
+        this.conexionsFile = new File(path);
     }
 
     public Tile getTile(int index) {
@@ -40,42 +52,92 @@ public class WaveFuntionColapse {
         this.tilesDir = new File(path);
     }
 
-    private void loadTiles() {
+    public void setNewGrid(int width, int height) {
+        this.grid = new Grid(width, height);
+    }
 
-        loadTilesRotations(this.conexcions);
+    public String getTileDir() {
+        return this.tilesDir.getAbsolutePath().toString();
+    }
 
-        this.tiles = new Tile[tilesFiles.length * 4 - 3];
-        // Obligatoriamente debe haber un tile Blank.png
-        for (int i = 0; i < tilesFiles.length; i++) {
-            if (tilesFiles[i].getName().equals("BLANK.png")) {
-                this.tiles[i] = new Tile(0, this.tilesDir + "/" + "BLANK.png", new short[] { 0, 0, 0, 0 },
-                        (short) 0);
-            } else {
-                for (int j = 0; j < 4; j++) {
-                    this.tiles[i] = new Tile(j, this.tilesDir + "/" + tilesFiles[i].getName(), this.conexcions[i],
-                            (short) 0);
-                }
-            }
+    public String getConexionsFile() {
+        return this.conexionsFile.getAbsolutePath().toString();
+    }
+
+    // #region Load Tiles and Conexions
+
+    public void loadTilesConexions() {
+
+        // Comprobar que la ruta indicada es un archivo
+        if (!conexionsFile.isFile()) {
+            throw new IllegalArgumentException("El archivo de conexiones no existe");
+        }
+        // Comprobar que la ruta indicada es un archivo .csv
+        if (conexionsFile.getName().contains("*.csv")) {
+            throw new IllegalArgumentException("El archivo de conexiones debe ser de extensión .csv");
         }
 
     }
 
-    public void loadManualTiles(Tile[] dataTiles) {
-        this.tiles = dataTiles;
+    public void loadTiles() {
+
+        this.tilesFiles = this.tilesDir.listFiles();
+        // Comprobar que hay patrones en la ruta indicada
+        if (tilesFiles == null || tilesFiles.length == 0) {
+            throw new IllegalArgumentException("No hay patrones válidos cargados");
+        }
+        // Obligatoriamente debe haber un tile Blank.png
+        boolean isContainsBlank = false;
+        for (File f : this.tilesFiles) {
+            if (f.getName().contains("BLANK.")) {
+                isContainsBlank = true;
+            }
+        }
+        if (!isContainsBlank) {
+            throw new IllegalArgumentException("No hay un patrón con el nombre Blank");
+        }
+
     }
 
-    private void loadManualTiles() {
-        this.tiles = new Tile[6];
-        this.tiles[0] = new Tile(0, "src/main/resources/Tiles/BLANK.png", new short[] { 0, 0, 0, 0 }, (short) 0);
-        this.tiles[1] = new Tile(0, "src/main/resources/Tiles/Tiles[0].png", new short[] { 1, 1, 1, 1 }, (short) 0);
-        this.tiles[2] = new Tile(0, "src/main/resources/Tiles/Tiles[1].png", (short) 0);
-        this.tiles[3] = new Tile(1, "src/main/resources/Tiles/Tiles[1].png", (short) 0);
-        this.tiles[4] = new Tile(2, "src/main/resources/Tiles/Tiles[1].png", (short) 0);
-        this.tiles[5] = new Tile(3, "src/main/resources/Tiles/Tiles[1].png", (short) 0);
-    }
+    public void generateTilesRotations() {
 
-    public void loadTilesRotations(short[] data[]) {
-        this.conexcions = data;
+        loadTiles();
+        loadTilesConexions();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(conexionsFile))) {
+            ArrayList<Conexion> tempConexcions = new ArrayList<>();
+
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] values = linea.split(",");
+                short[] tempArr = new short[values.length];
+                for (int i = 0; i < tempArr.length; i++) {
+                    tempArr[i] = Short.parseShort(values[i]);
+                }
+                tempConexcions.add(new Conexion(tempArr));
+            }
+
+            this.conexcions = new Conexion[tempConexcions.size()];
+            for (int i = 0; i < tempConexcions.size(); i++) {
+                this.conexcions[i] = tempConexcions.get(i);
+            }
+
+            final int conecxions = conexcions.length;
+            final int tiles = this.tilesFiles.length;
+
+            this.tiles = new Tile[conecxions * tiles];
+            int index = 0;
+            for (int i = 0; i < conecxions; i++) {
+                for (int j = 0; j < tiles; j++) {
+                    this.tiles[index] = new Tile(i, this.tilesFiles[j].getName(), this.conexcions[i], (short) 0);
+                    index++;
+                }
+            }
+
+        } catch (Exception e) {
+            e.getCause();
+        }
+
     }
 
     public void showTiles() {
@@ -94,50 +156,64 @@ public class WaveFuntionColapse {
         return grid;
     }
 
+    // #region Draw and Update Entropie
+
     public void fillEntropie() {
-
-        for (int i = 0; i < this.grid.getWidth(); i++) {
-            for (int j = 0; j < this.grid.getHeight(); j++) {
-                this.grid.getCell(i, j).setEntropy(tiles);
-            }
-        }
+        this.grid.forEach(cell -> {
+            cell.setEntropy(tiles);
+        });
     }
 
-    public static void updateEntropie(Cell cell, Tile deleteEntropy) {
-        Tile actualEntropie[] = cell.getEntropy();
-        for (int i = 0; i < actualEntropie.length; i++) {
-            if (actualEntropie[i] == deleteEntropy) {
-                actualEntropie[i] = null;
-            }
-        }
-        Tile returnedTile[] = new Tile[actualEntropie.length - 1];
-        for (int i = 0; i < actualEntropie.length; i++) {
-            if (actualEntropie[i] != null) {
-                returnedTile[i] = actualEntropie[i];
-            }
-        }
-        cell.setEntropy(returnedTile);
+    private Cell getTheLessEntropyCell() {
+        return Arrays.stream(this.grid.getSpaces())
+                .flatMap(Arrays::stream)
+                .filter(cell -> !cell.isColapsed())
+                .sorted(Comparator.comparingInt(Cell::getEntropyLenght))
+                .findFirst()
+                .map(cell -> {
+                    cell.setColapsedR(true);
+                    cell.colapseTile(cell.getRandomEntropieValueTile());
+                    return cell;
+                })
+                .orElse(null);
     }
 
-    public Cell getTheLessEntropyCell() {
+    private void updateNeighbors(Cell cell) {
 
-        Cell lessEntropyCell = null;
-        for (Cell cell : this.grid.getSpaces()[0]) {
-            if (cell.getEntropy().length < lessEntropyCell.getEntropy().length) {
-                lessEntropyCell = cell;
+        Arrays.stream(cell.getNeighbors()).forEach(neighbor -> {
+            if (neighbor != null) {
+                this.grid.getCell(neighbor.getPosX(), neighbor.getPosY()).updateEntropie(cell.getColapsedTile());
             }
-        }
-        if (lessEntropyCell == null) {
-            lessEntropyCell = this.getRandoCell();
-        }
-        return lessEntropyCell;
+        });
     }
 
-    public Cell getRandoCell() {
+    private Cell getRandomCell() {
         int x = (int) (Math.random() * this.grid.getWidth());
         int y = (int) (Math.random() * this.grid.getHeight());
 
         return this.grid.getCell(x, y);
+    }
+
+    public boolean checkIsAllCollapsed() {
+        boolean isAllCollapsed = true;
+        for (Cell[] cell : this.grid.getSpaces()) {
+            for (Cell c : cell) {
+                if (!c.isColapsed()) {
+                    return isAllCollapsed = false;
+                }
+            }
+        }
+        return isAllCollapsed;
+    }
+
+    public void draw() {
+
+        fillEntropie();
+        this.getRandomCell().setColapsedR(true).colapseTile(this.getRandomCell().getRandomEntropieValueTile());
+        do {
+            updateNeighbors(getTheLessEntropyCell());
+        } while (!checkIsAllCollapsed());
+
     }
 
 }
