@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
 
 public class MapViewController {
 
@@ -51,7 +52,13 @@ public class MapViewController {
             for (int j = 0; j < grid.getRowCount(); j++) {
                 String imagePath = "/images/Tiles/" + wfc.getGrid().getSpaces()[i][j].getColapsedTile().getImg();
                 Image image = new Image(getClass().getResourceAsStream(imagePath));
-                grid.add(new ImageView(image), i, j);
+                ImageView imageView = new ImageView(image);
+
+                imageView.getTransforms()
+                        .add(new Rotate(wfc.getGrid().getSpaces()[i][j].getColapsedTile().getRotation() * 90,
+                                image.getWidth() / 2, image.getHeight() / 2));
+
+                grid.add(imageView, i, j);
             }
         }
 

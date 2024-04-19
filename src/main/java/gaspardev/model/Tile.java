@@ -1,25 +1,28 @@
 package gaspardev.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.ArrayList;
 
 public class Tile implements Serializable {
 
     private int rotation = 0;
     private String img;
-    private Conexion conexions = new Conexion(new short[] { 0, 0, 0, 0 });
-    private short weight = 0;
+    private Conexion conexions = new Conexion(new int[] { 0, 0, 0, 0 });
+    private int weight = 0;
 
     public Tile() {
 
     }
 
-    public Tile(int rotation, String img, short weight) {
+    public Tile(int rotation, String img, int weight) {
         this.rotation = rotation;
         this.img = img;
         this.weight = weight;
     }
 
-    public Tile(int rotation, String img, Conexion conexcions, short weight) {
+    public Tile(int rotation, String img, Conexion conexcions, int weight) {
         this.rotation = rotation;
         this.img = img;
         this.conexions = conexcions;
@@ -42,7 +45,7 @@ public class Tile implements Serializable {
         this.img = img;
     }
 
-    public short[] getConexcions() {
+    public int[] getConexcions() {
         return this.conexions.getRotations();
     }
 
@@ -57,15 +60,15 @@ public class Tile implements Serializable {
         return sb.toString();
     }
 
-    public void setConexcions(short[] conexcions) {
+    public void setConexcions(int[] conexcions) {
         this.conexions.setRotations(conexcions);
     }
 
-    public short getWeight() {
+    public int getWeight() {
         return this.weight;
     }
 
-    public void setWeight(short weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
 
@@ -75,6 +78,21 @@ public class Tile implements Serializable {
         } else {
             return false;
         }
+    }
+
+    public Tile rotateTile() {
+
+        ArrayList<Integer> tempArr = new ArrayList<>();
+        for (int i = 0; i < this.conexions.getRotations().length; i++) {
+            tempArr.add(this.conexions.getRotations()[i]);
+        }
+        Collections.rotate(tempArr, this.rotation);
+        int[] returnedCon = new int[tempArr.size()];
+        for (int i = 0; i < tempArr.size(); i++) {
+            returnedCon[i] = tempArr.get(i);
+        }
+        this.conexions = new Conexion(returnedCon);
+        return this;
     }
 
     @Override

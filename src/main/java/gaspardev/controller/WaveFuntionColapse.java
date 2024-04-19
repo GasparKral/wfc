@@ -10,7 +10,6 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.Comparator;
 import java.util.ArrayList;
 
@@ -110,7 +109,7 @@ public class WaveFuntionColapse {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] values = linea.split(",");
-                short[] tempArr = new short[values.length];
+                int[] tempArr = new int[values.length];
                 for (int i = 0; i < tempArr.length; i++) {
                     tempArr[i] = Short.parseShort(values[i]);
                 }
@@ -140,6 +139,15 @@ public class WaveFuntionColapse {
 
     }
 
+    public void rotations() {
+
+        for (Cell[] cellRow : this.grid.getSpaces()) {
+            for (Cell cell : cellRow) {
+                Arrays.stream(cell.getEntropy()).forEach(t -> t.rotateTile());
+            }
+        }
+    }
+
     public void showTiles() {
         for (int i = 0; i < tiles.length; i++) {
             System.out.println(tiles[i].getImg() + " " + tiles[i].getRotation());
@@ -165,26 +173,59 @@ public class WaveFuntionColapse {
     }
 
     private Cell getTheLessEntropyCell() {
-        return Arrays.stream(this.grid.getSpaces())
-                .flatMap(Arrays::stream)
-                .filter(cell -> !cell.isColapsed())
-                .sorted(Comparator.comparingInt(Cell::getEntropyLenght))
-                .findFirst()
-                .map(cell -> {
-                    cell.setColapsedR(true);
-                    cell.colapseTile(cell.getRandomEntropieValueTile());
-                    return cell;
-                })
-                .orElse(null);
+        Cell returendcell = null;
+        int lessEntropyValues = 0;
+
+        for (Cell[] cell : this.grid.getSpaces()) {
+            for (Cell c : cell) {
+                if (!c.isColapsed()) {
+                    returendcell = c;
+                    lessEntropyValues = c.getEntropy().length;
+                    break;
+                }
+            }
+
+        }
+
+        for (Cell[] cell : this.grid.getSpaces()) {
+            for (Cell c : cell) {
+                if (!c.isColapsed()) {
+                    if (c.getEntropy().length < lessEntropyValues) {
+                        lessEntropyValues = c.getEntropy().length;
+                        returendcell = c;
+                    }
+                }
+            }
+
+        }
+
+        returendcell.setColapsedR(true).colapseTile(this.getRandomCell().getTheBestTile());
+
+        return returendcell;
+
     }
+
+    // private Cell getLessEntropyeCell() {
+
+    // return Arrays.stream(this.grid.getSpaces())
+    // .flatMap(cellArr -> Arrays.stream(cellArr))
+    // .filter(cell -> !cell.isColapsed())
+    // .min(Comparator.comparingInt(cell -> cell.getEntropy().length))
+    // .map(cell ->
+    // cell.setColapsedR(true).colapseTileR(cell.getRandomEntropieValueTile()))
+    // .orElse(null);
+
+    // }
 
     private void updateNeighbors(Cell cell) {
 
-        Arrays.stream(cell.getNeighbors()).forEach(neighbor -> {
-            if (neighbor != null) {
-                this.grid.getCell(neighbor.getPosX(), neighbor.getPosY()).updateEntropie(cell.getColapsedTile());
-            }
-        });
+        Arrays.stream(this.grid.getCell(cell.getPosX(), cell.getPosY()).getNeighbors())
+                .forEach(neighbor -> {
+                    if (neighbor != null) {
+                        neighbor.updateEntropie(cell.getColapsedTile());
+                    }
+                });
+
     }
 
     private Cell getRandomCell() {
@@ -203,15 +244,28 @@ public class WaveFuntionColapse {
                 }
             }
         }
+
         return isAllCollapsed;
     }
 
     public void draw() {
 
         fillEntropie();
-        this.getRandomCell().setColapsedR(true).colapseTile(this.getRandomCell().getRandomEntropieValueTile());
+        rotations();
+
         do {
             updateNeighbors(getTheLessEntropyCell());
+
+            // try {
+            // Thread.sleep(1000);
+            // System.out.println("\n\n");
+            // this.grid.forEach(cell -> {
+            // System.out.println(cell);
+            // });
+            // } catch (Exception e) {
+            // e.getCause();
+            // }
+
         } while (!checkIsAllCollapsed());
 
     }

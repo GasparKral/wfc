@@ -3,13 +3,13 @@ package gaspardev.model;
 public class Conexion {
 
     private int segments = 4;
-    private short rotations[] = { 0, 0, 0, 0 };
+    private int rotations[] = { 0, 0, 0, 0 };
 
     public Conexion() {
 
     }
 
-    public Conexion(short[] rotations) {
+    public Conexion(int[] rotations) {
         this.rotations = rotations;
         this.segments = rotations.length;
     }
@@ -22,11 +22,11 @@ public class Conexion {
         this.segments = segments;
     }
 
-    public short[] getRotations() {
+    public int[] getRotations() {
         return this.rotations;
     }
 
-    public void setRotations(short[] rotations) {
+    public void setRotations(int[] rotations) {
         this.rotations = rotations;
     }
 

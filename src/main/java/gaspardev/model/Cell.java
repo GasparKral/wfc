@@ -1,9 +1,12 @@
 package gaspardev.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Random;
 
-public class Cell implements Serializable {
+public class Cell implements Serializable, Comparable<Cell> {
 
     private int posX;
     private int posY;
@@ -41,6 +44,12 @@ public class Cell implements Serializable {
     public void colapseTile(Tile colapsTile) {
         this.colapsedTile = colapsTile;
         this.isColapsed = true;
+    }
+
+    public Cell colapseTileR(Tile colapsTile) {
+        this.colapsedTile = colapsTile;
+        this.isColapsed = true;
+        return this;
     }
 
     public Tile getColapsedTile() {
@@ -100,22 +109,20 @@ public class Cell implements Serializable {
         this.entropy = Arrays.stream(this.entropy).filter(tile -> tile != deleteEntropy).toArray(Tile[]::new);
     }
 
-    public Tile getRandomEntropieValueTile() {
+    public Tile getTheBestTile() {
+        Random random = new Random();
+        int randomIndex = random.nextInt(this.entropy.length);
+        Tile randomTile = Arrays.stream(this.entropy)
+                .sorted(Comparator.comparingInt(Tile::getWeight))
+                .skip(randomIndex)
+                .findFirst()
+                .orElse(null);
+        return randomTile;
+    }
 
-        double index = Math.random();
-        double array[] = new double[entropy.length];
-        Tile returnedTile = null;
-
-        for (int i = 0; i < array.length; i++) {
-            array[i] = (1 / array.length) * this.getEntropy()[i].getWeight();
-        }
-
-        for (int i = 0; i < array.length; i++) {
-            if (index >= array[i]) {
-                returnedTile = this.getEntropy()[i];
-            }
-        }
-        return returnedTile;
+    @Override
+    public int compareTo(Cell o) {
+        return this.getEntropy().length - o.getEntropy().length;
     }
 
     @Override
