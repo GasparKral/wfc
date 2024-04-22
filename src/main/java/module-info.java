@@ -7,4 +7,5 @@ module gaspardev {
     opens gaspardev.controller to javafx.fxml;
 
     exports gaspardev;
+
 }

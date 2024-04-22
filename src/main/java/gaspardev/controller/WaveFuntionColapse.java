@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.ArrayList;
 
 public class WaveFuntionColapse {
@@ -21,7 +22,6 @@ public class WaveFuntionColapse {
 
     private Grid grid;
     private Tile[] tiles;
-    private Conexion[] conexcions;
 
     public WaveFuntionColapse() {
 
@@ -99,44 +99,36 @@ public class WaveFuntionColapse {
     }
 
     public void generateTilesRotations() {
-
         loadTiles();
         loadTilesConexions();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(conexionsFile))) {
-            ArrayList<Conexion> tempConexcions = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(conexionsFile))) {
+            List<Conexion> conexions = new ArrayList<>();
 
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] values = linea.split(",");
-                int[] tempArr = new int[values.length];
-                for (int i = 0; i < tempArr.length; i++) {
-                    tempArr[i] = Short.parseShort(values[i]);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                int[] arr = new int[values.length];
+                for (int i = 0; i < arr.length; i++) {
+                    arr[i] = Short.parseShort(values[i]);
                 }
-                tempConexcions.add(new Conexion(tempArr));
+                conexions.add(new Conexion(arr));
             }
 
-            this.conexcions = new Conexion[tempConexcions.size()];
-            for (int i = 0; i < tempConexcions.size(); i++) {
-                this.conexcions[i] = tempConexcions.get(i);
-            }
-
-            final int conecxions = conexcions.length;
-            final int tiles = this.tilesFiles.length;
-
-            this.tiles = new Tile[conecxions * tiles];
+            this.tiles = new Tile[tilesFiles.length * conexions.get(0).getSegments()];
             int index = 0;
-            for (int i = 0; i < conecxions; i++) {
-                for (int j = 0; j < tiles; j++) {
-                    this.tiles[index] = new Tile(i, this.tilesFiles[j].getName(), this.conexcions[i], (short) 0);
+            int filesLength = 0;
+            for (File pattern : tilesFiles) {
+                for (int rotation = 0; rotation < conexions.get(0).getSegments(); rotation++) {
+                    this.tiles[index] = new Tile(rotation, pattern.getName(), conexions.get(filesLength), (short) 0);
                     index++;
                 }
+                filesLength++;
             }
 
         } catch (Exception e) {
             e.getCause();
         }
-
     }
 
     public void rotations() {
@@ -148,91 +140,24 @@ public class WaveFuntionColapse {
         }
     }
 
-    public void showTiles() {
-        for (int i = 0; i < tiles.length; i++) {
-            System.out.println(tiles[i].getImg() + " " + tiles[i].getRotation());
-        }
-    }
-
-    public void showTilesFiles() {
-        for (File f : this.tilesFiles) {
-            System.out.println(f.getName());
-        }
-    }
-
     public Grid getGrid() {
-        return grid;
+        return this.grid;
     }
 
     // #region Draw and Update Entropie
 
     public void fillEntropie() {
-        this.grid.forEach(cell -> {
-            cell.setEntropy(tiles);
-        });
+        Arrays.stream(this.grid.getSpaces())
+                .flatMap(Arrays::stream)
+                .forEach(cell -> cell.setEntropy(this.tiles));
     }
 
-    private Cell getTheLessEntropyCell() {
-        Cell returendcell = null;
-        int lessEntropyValues = 0;
-
-        for (Cell[] cell : this.grid.getSpaces()) {
-            for (Cell c : cell) {
-                if (!c.isColapsed()) {
-                    returendcell = c;
-                    lessEntropyValues = c.getEntropy().length;
-                    break;
-                }
-            }
-
-        }
-
-        for (Cell[] cell : this.grid.getSpaces()) {
-            for (Cell c : cell) {
-                if (!c.isColapsed()) {
-                    if (c.getEntropy().length < lessEntropyValues) {
-                        lessEntropyValues = c.getEntropy().length;
-                        returendcell = c;
-                    }
-                }
-            }
-
-        }
-
-        returendcell.setColapsedR(true).colapseTile(this.getRandomCell().getTheBestTile());
-
-        return returendcell;
-
-    }
-
-    // private Cell getLessEntropyeCell() {
-
-    // return Arrays.stream(this.grid.getSpaces())
-    // .flatMap(cellArr -> Arrays.stream(cellArr))
-    // .filter(cell -> !cell.isColapsed())
-    // .min(Comparator.comparingInt(cell -> cell.getEntropy().length))
-    // .map(cell ->
-    // cell.setColapsedR(true).colapseTileR(cell.getRandomEntropieValueTile()))
-    // .orElse(null);
-
-    // }
-
-    private void updateNeighbors(Cell cell) {
-
-        Arrays.stream(this.grid.getCell(cell.getPosX(), cell.getPosY()).getNeighbors())
-                .forEach(neighbor -> {
-                    if (neighbor != null) {
-                        neighbor.updateEntropie(cell.getColapsedTile());
-                    }
-                });
-
-    }
-
-    private Cell getRandomCell() {
-        int x = (int) (Math.random() * this.grid.getWidth());
-        int y = (int) (Math.random() * this.grid.getHeight());
-
-        return this.grid.getCell(x, y);
+    public Cell getCellWithMinimumEntropy() {
+        return Arrays.stream(this.grid.getSpaces())
+                .flatMap(Arrays::stream)
+                .filter(cell -> !cell.isColapsed())
+                .min(Comparator.comparingInt(Cell::getEntropyLenght))
+                .get();
     }
 
     public boolean checkIsAllCollapsed() {
@@ -248,26 +173,18 @@ public class WaveFuntionColapse {
         return isAllCollapsed;
     }
 
-    public void draw() {
+    public boolean restartGrid() {
+        boolean hasEmptyCells = Arrays.stream(grid.getSpaces())
+                .flatMap(Arrays::stream)
+                .anyMatch(cell -> cell.getEntropy().length == 0);
 
-        fillEntropie();
-        rotations();
+        return hasEmptyCells;
+    }
 
-        do {
-            updateNeighbors(getTheLessEntropyCell());
-
-            // try {
-            // Thread.sleep(1000);
-            // System.out.println("\n\n");
-            // this.grid.forEach(cell -> {
-            // System.out.println(cell);
-            // });
-            // } catch (Exception e) {
-            // e.getCause();
-            // }
-
-        } while (!checkIsAllCollapsed());
-
+    public void clearEntropie() {
+        Arrays.stream(this.grid.getSpaces())
+                .flatMap(Arrays::stream)
+                .forEach(cell -> cell.setEntropy(new Tile[0]));
     }
 
 }

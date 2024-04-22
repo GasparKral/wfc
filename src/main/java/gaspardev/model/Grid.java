@@ -57,22 +57,22 @@ public class Grid implements Iterable<Cell>, Serializable {
         }
     }
 
-    public void fillNeighbors() {
-
-        try {
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    this.spaces[i][j].setNeighbors(new Cell[] {
-                            this.getCell(i, j - 1),
-                            this.getCell(i + 1, j),
-                            this.getCell(i, j + 1),
-                            this.getCell(i - 1, j)
-                    });
-                }
+    public void connectNeighbors() {
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                Cell cell = spaces[row][col];
+                cell.setNeighbors(new Cell[] {
+                        getCellOrNull(row, col - 1),
+                        getCellOrNull(row + 1, col),
+                        getCellOrNull(row, col + 1),
+                        getCellOrNull(row - 1, col)
+                });
             }
-        } catch (Exception e) {
-            e.getCause();
         }
+    }
+
+    private Cell getCellOrNull(int row, int col) {
+        return row >= 0 && row < height && col >= 0 && col < width ? spaces[row][col] : null;
     }
 
     @Override

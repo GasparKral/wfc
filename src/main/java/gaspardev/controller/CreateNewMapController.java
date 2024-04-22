@@ -95,15 +95,14 @@ public class CreateNewMapController {
     @FXML
     public void goNewMap(ActionEvent event) {
         try {
-
             if (!isEmpty(inputHeight.getText()) && !isEmpty(inputWidth.getText())) {
                 wfc.setDimensions(Integer.parseInt(inputWidth.getText()), Integer.parseInt(inputHeight.getText()));
                 wfc.generateTilesRotations();
                 wfc.getGrid().fillSpaces();
-                wfc.getGrid().fillNeighbors();
+                wfc.getGrid().connectNeighbors();
             } else {
                 errorShowLabel.setText("Error al crear el mapa, faltan las dimensiones o error al cargar información");
-                throw new Exception("Error al crear el mapa, faltan las dimensiones");
+                // throw new Exception("Error al crear el mapa, faltan las dimensiones");
             }
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MapView.fxml"));
             Parent root = loader.load();
@@ -123,7 +122,6 @@ public class CreateNewMapController {
     public static boolean isEmpty(String str) {
 
         if (str == null || str.isEmpty()) {
-            System.out.println(str);
             return true;
         }
         return false;

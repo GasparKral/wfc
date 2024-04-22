@@ -9,6 +9,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
+import gaspardev.model.Cell;
+
 public class MapViewController {
 
     WaveFuntionColapse wfc;
@@ -26,7 +28,7 @@ public class MapViewController {
     }
 
     @FXML
-    private void drawMap() {
+    private void drawMap() throws Exception {
 
         buttonMap.setVisible(false);
 
@@ -46,22 +48,41 @@ public class MapViewController {
 
         // Agregar la grid al anchorPane
         anchorPane.getChildren().add(grid);
-        wfc.draw();
 
-        for (int i = 0; i < grid.getColumnCount(); i++) {
-            for (int j = 0; j < grid.getRowCount(); j++) {
-                String imagePath = "/images/Tiles/" + wfc.getGrid().getSpaces()[i][j].getColapsedTile().getImg();
-                Image image = new Image(getClass().getResourceAsStream(imagePath));
-                ImageView imageView = new ImageView(image);
+        // Draw
+        draw();
 
-                imageView.getTransforms()
-                        .add(new Rotate(wfc.getGrid().getSpaces()[i][j].getColapsedTile().getRotation() * 90,
-                                image.getWidth() / 2, image.getHeight() / 2));
+    }
 
-                grid.add(imageView, i, j);
+    private void draw() {
+
+        wfc.clearEntropie();
+        wfc.fillEntropie();
+        wfc.rotations();
+
+        do {
+
+            Cell tempCell = wfc.getCellWithMinimumEntropy().colapseTileR();
+            tempCell.updateNeighborsValue();
+
+            // Obtener la imagen de la celda
+            String imagePath = "/images/Tiles/" + tempCell.getColapsedTile().getImg();
+            Image image = new Image(getClass().getResourceAsStream(imagePath));
+            ImageView imageView = new ImageView(image);
+
+            imageView.getTransforms()
+                    .add(new Rotate(
+                            tempCell.getColapsedTile().getRotation() * (360
+                                    / tempCell.getColapsedTile().getConexcions().length),
+                            image.getWidth() / 2, image.getHeight() / 2));
+
+            grid.add(imageView, tempCell.getPosX(), tempCell.getPosY());
+
+            if (wfc.restartGrid()) {
+                draw();
             }
-        }
 
+        } while (!wfc.checkIsAllCollapsed());
     }
 
 }

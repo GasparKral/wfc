@@ -1,8 +1,8 @@
 package gaspardev.model;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
+import gaspardev.model.Cell.Direction;
 import java.util.ArrayList;
 
 public class Tile implements Serializable {
@@ -80,7 +80,42 @@ public class Tile implements Serializable {
         }
     }
 
-    public Tile rotateTile() {
+    public boolean checkIfCanConect(Tile t, Direction direction) {
+
+        switch (direction) {
+            case UP:
+                if (this.conexions.getRotations()[0] == t.conexions.getRotations()[2]) {
+                    return true;
+                } else {
+                    return false;
+                }
+            case DOWN:
+                if (this.conexions.getRotations()[2] == t.conexions.getRotations()[0]) {
+                    return true;
+                } else {
+                    return false;
+                }
+            case LEFT:
+                if (this.conexions.getRotations()[3] == t.conexions.getRotations()[1]) {
+                    return true;
+                } else {
+                    return false;
+                }
+            case RIGHT:
+                if (this.conexions.getRotations()[1] == t.conexions.getRotations()[3]) {
+                    return true;
+                } else {
+                    return false;
+                }
+            default:
+                break;
+        }
+
+        return false;
+
+    }
+
+    public void rotateTile() {
 
         ArrayList<Integer> tempArr = new ArrayList<>();
         for (int i = 0; i < this.conexions.getRotations().length; i++) {
@@ -92,7 +127,7 @@ public class Tile implements Serializable {
             returnedCon[i] = tempArr.get(i);
         }
         this.conexions = new Conexion(returnedCon);
-        return this;
+
     }
 
     @Override

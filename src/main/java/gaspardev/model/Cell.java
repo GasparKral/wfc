@@ -1,7 +1,6 @@
 package gaspardev.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
@@ -46,10 +45,14 @@ public class Cell implements Serializable, Comparable<Cell> {
         this.isColapsed = true;
     }
 
-    public Cell colapseTileR(Tile colapsTile) {
-        this.colapsedTile = colapsTile;
+    public Cell colapseTileR() {
+        this.colapsedTile = getTheBestTile();
         this.isColapsed = true;
         return this;
+    }
+
+    public static Tile getColapsedTile(Cell cell) {
+        return cell.getColapsedTile();
     }
 
     public Tile getColapsedTile() {
@@ -105,14 +108,52 @@ public class Cell implements Serializable, Comparable<Cell> {
         this.colapsedTile = colapsTile;
     }
 
-    public void updateEntropie(Tile deleteEntropy) {
+    public enum Direction {
+        UP, RIGHT, DOWN, LEFT
+    }
+
+    public Direction getDirection(Cell cell) {
+
+        int vecY = cell.getPosY() - this.getPosY();
+        int vecX = cell.getPosX() - this.getPosX();
+
+        if (vecY > 0) {
+            return Direction.DOWN;
+        } else if (vecY < 0) {
+            return Direction.UP;
+        } else if (vecX > 0) {
+            return Direction.RIGHT;
+        } else if (vecX < 0) {
+            return Direction.LEFT;
+        } else {
+            return null;
+        }
+
+    }
+
+    private void updateEntropie(Tile deleteEntropy) {
         this.entropy = Arrays.stream(this.entropy).filter(tile -> tile != deleteEntropy).toArray(Tile[]::new);
+    }
+
+    public void updateNeighborsValue() {
+
+        Arrays.stream(this.neighbors)
+                .forEach(neighbor -> {
+                    if (neighbor != null) {
+                        for (Tile t : neighbor.getEntropy()) {
+                            if (!this.colapsedTile.checkIfCanConect(t, this.getDirection(neighbor)))
+                                neighbor.updateEntropie(t);
+                        }
+                    }
+                });
+
     }
 
     public Tile getTheBestTile() {
         Random random = new Random();
-        int randomIndex = random.nextInt(this.entropy.length);
-        Tile randomTile = Arrays.stream(this.entropy)
+        int randomIndex = random.nextInt(this.entropy.length - 1);
+        Tile randomTile = Arrays.stream(
+                this.entropy)
                 .sorted(Comparator.comparingInt(Tile::getWeight))
                 .skip(randomIndex)
                 .findFirst()
@@ -131,10 +172,7 @@ public class Cell implements Serializable, Comparable<Cell> {
                 " posX='" + getPosX() + "'" +
                 ", posY='" + getPosY() + "'" +
                 ", isColapsed='" + isColapsed() + "'" +
-                ", colapsedTile='" + getColapsedTile() + "'" +
-                ", neighbors='" + getNeighbors() + "'" +
-                ", entropy='" + getEntropy() + "'" +
-                "}";
+                ", colapsedTile='" + getColapsedTile() + "'";
     }
 
 }
