@@ -22,8 +22,6 @@ public class MapViewController {
     GridPane grid = new GridPane();
     @FXML
     Button buttonMap;
-    @FXML
-    Button newMapButton = new Button("New Map");
 
     @FXML
     public void setInitial(WaveFuntionColapse wfc) {
@@ -51,22 +49,15 @@ public class MapViewController {
 
         // Agregar la grid al anchorPane
         anchorPane.getChildren().add(grid);
+        AnchorPane.setLeftAnchor(grid, (anchorPane.getWidth() - wfc.getGrid().getWidth() * 20) / 2);
+        AnchorPane.setTopAnchor(grid, (anchorPane.getHeight() - wfc.getGrid().getHeight() * 20) / 2);
+
+        // Centrar el botón en el anchorPane
+        AnchorPane.setLeftAnchor(buttonMap, (anchorPane.getWidth() - buttonMap.getPrefWidth()) / 2);
+        AnchorPane.setTopAnchor(buttonMap, (anchorPane.getHeight() - buttonMap.getPrefHeight()) / 2);
 
         // Draw
         draw();
-
-        // newMapButton.setVisible(true);
-        // anchorPane.getChildren().add(newMapButton);
-        // newMapButton.setOnAction(e -> {
-        // anchorPane.getChildren().remove(newMapButton);
-        // buttonMap.setVisible(true);
-        // try {
-        // clearGrid();
-        // drawMap();
-        // } catch (Exception ex) {
-        // ex.getCause();
-        // }
-        // });
 
     }
 
@@ -104,11 +95,7 @@ public class MapViewController {
             }
 
         } while (!wfc.checkIsAllCollapsed());
+
     }
-
-    // private void clearGrid() {
-
-    // grid.getChildren().clear();
-    // }
 
 }

@@ -109,6 +109,7 @@ public class CreateNewMapController {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.setMaximized(true);
             stage.show();
 
             MapViewController controller = loader.getController();
