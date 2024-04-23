@@ -71,7 +71,9 @@ public class Tile implements Serializable {
         sb.append("[");
         for (int i = 0; i < this.conexions.getRotations().length; i++) {
             sb.append(conexions.getRotations()[i]);
-            sb.append(", ");
+            if (i < this.conexions.getRotations().length - 1) {
+                sb.append(", ");
+            }
         }
         sb.append("]");
         return sb.toString();
