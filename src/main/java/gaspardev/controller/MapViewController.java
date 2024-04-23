@@ -10,6 +10,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
+import java.util.Arrays;
+
 import gaspardev.model.Cell;
 
 public class MapViewController {
@@ -101,6 +103,8 @@ public class MapViewController {
             if (wfc.restartGrid()) {
                 draw();
             }
+
+            // Arrays.stream(wfc.getGrid().getSpaces()).flatMap(Arrays::stream).forEach(System.out::println);
 
         } while (!wfc.checkIsAllCollapsed());
     }

@@ -158,7 +158,7 @@ public class WaveFuntionColapse {
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
                 int[] arr = new int[values.length - 1];
-                for (int i = 0; i < arr.length - 1; i++) {
+                for (int i = 0; i < arr.length; i++) {
                     arr[i] = Short.parseShort(values[i]);
                 }
                 weightS.add(Short.parseShort(values[values.length - 1]));
@@ -173,8 +173,11 @@ public class WaveFuntionColapse {
                     this.tiles[index] = new Tile(rotation, pattern.getName(), conexions.get(filesLength),
                             weightS.get(filesLength));
                     index++;
+
+                    // System.out.println(this.tiles[index - 1]);
                 }
                 filesLength++;
+
             }
 
         } catch (Exception e) {
