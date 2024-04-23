@@ -154,7 +154,7 @@ public class Cell implements Serializable, Comparable<Cell> {
         int randomIndex = random.nextInt(this.entropy.length - 1);
         Tile randomTile = Arrays.stream(
                 this.entropy)
-                .sorted(Comparator.comparingInt(Tile::getWeight))
+                .sorted(Comparator.comparingInt(Tile::getWeight).reversed())
                 .skip(randomIndex)
                 .findFirst()
                 .orElse(null);

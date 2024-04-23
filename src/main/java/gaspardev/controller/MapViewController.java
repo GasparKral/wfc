@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
@@ -21,6 +22,8 @@ public class MapViewController {
     GridPane grid = new GridPane();
     @FXML
     Button buttonMap;
+    @FXML
+    Button newMapButton = new Button("New Map");
 
     @FXML
     public void setInitial(WaveFuntionColapse wfc) {
@@ -51,6 +54,19 @@ public class MapViewController {
 
         // Draw
         draw();
+
+        // newMapButton.setVisible(true);
+        // anchorPane.getChildren().add(newMapButton);
+        // newMapButton.setOnAction(e -> {
+        // anchorPane.getChildren().remove(newMapButton);
+        // buttonMap.setVisible(true);
+        // try {
+        // clearGrid();
+        // drawMap();
+        // } catch (Exception ex) {
+        // ex.getCause();
+        // }
+        // });
 
     }
 
@@ -83,6 +99,11 @@ public class MapViewController {
             }
 
         } while (!wfc.checkIsAllCollapsed());
+    }
+
+    private void clearGrid() {
+
+        grid.getChildren().clear();
     }
 
 }

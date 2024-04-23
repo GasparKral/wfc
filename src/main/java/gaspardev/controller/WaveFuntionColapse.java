@@ -104,14 +104,15 @@ public class WaveFuntionColapse {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(conexionsFile))) {
             List<Conexion> conexions = new ArrayList<>();
-
+            List<Short> weightS = new ArrayList<>();
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
-                int[] arr = new int[values.length];
-                for (int i = 0; i < arr.length; i++) {
+                int[] arr = new int[values.length - 1];
+                for (int i = 0; i < arr.length - 1; i++) {
                     arr[i] = Short.parseShort(values[i]);
                 }
+                weightS.add(Short.parseShort(values[values.length - 1]));
                 conexions.add(new Conexion(arr));
             }
 
@@ -120,7 +121,8 @@ public class WaveFuntionColapse {
             int filesLength = 0;
             for (File pattern : tilesFiles) {
                 for (int rotation = 0; rotation < conexions.get(0).getSegments(); rotation++) {
-                    this.tiles[index] = new Tile(rotation, pattern.getName(), conexions.get(filesLength), (short) 0);
+                    this.tiles[index] = new Tile(rotation, pattern.getName(), conexions.get(filesLength),
+                            weightS.get(filesLength));
                     index++;
                 }
                 filesLength++;
