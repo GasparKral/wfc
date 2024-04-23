@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class WaveFuntionColapse {
 
     // Direcciones absolutas por default
-    protected File tilesDir = new File("C:/programar/wfc/src/main/resources/images/Tiles");
+    protected File tilesDir = new File("C:/programar/wfc/src/main/resources/images/Basic");
     protected File conexionsFile = new File("C:/programar/wfc/src/main/resources/data/Conexions/conexions.csv");
     protected File[] tilesFiles;
 
@@ -58,6 +58,10 @@ public class WaveFuntionColapse {
 
     public String getTileDir() {
         return this.tilesDir.getAbsolutePath().toString();
+    }
+
+    public String getTileDirRelative() {
+        return this.tilesDir.getPath();
     }
 
     public String getConexionsFile() {
@@ -111,16 +115,6 @@ public class WaveFuntionColapse {
         if (tilesFiles == null || tilesFiles.length == 0) {
             throw new IllegalArgumentException("No hay patrones válidos cargados");
         }
-        // Obligatoriamente debe haber un tile Blank.png
-        boolean isContainsBlank = false;
-        for (File f : this.tilesFiles) {
-            if (f.getName().contains("BLANK.")) {
-                isContainsBlank = true;
-            }
-        }
-        if (!isContainsBlank) {
-            throw new IllegalArgumentException("No hay un patrón con el nombre Blank");
-        }
 
     }
 
@@ -173,8 +167,6 @@ public class WaveFuntionColapse {
                     this.tiles[index] = new Tile(rotation, pattern.getName(), conexions.get(filesLength),
                             weightS.get(filesLength));
                     index++;
-
-                    // System.out.println(this.tiles[index - 1]);
                 }
                 filesLength++;
 

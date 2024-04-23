@@ -10,8 +10,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
-import java.util.Arrays;
-
 import gaspardev.model.Cell;
 
 public class MapViewController {
@@ -88,7 +86,8 @@ public class MapViewController {
             tempCell.updateNeighborsValue();
 
             // Obtener la imagen de la celda
-            String imagePath = "/images/Tiles/" + tempCell.getColapsedTile().getImg();
+            String imagePath = wfc.getTileDirRelative().split("resources")[1].concat("\\").replaceAll("\\\\", "/")
+                    + tempCell.getColapsedTile().getImg();
             Image image = new Image(getClass().getResourceAsStream(imagePath));
             ImageView imageView = new ImageView(image);
 
@@ -103,8 +102,6 @@ public class MapViewController {
             if (wfc.restartGrid()) {
                 draw();
             }
-
-            // Arrays.stream(wfc.getGrid().getSpaces()).flatMap(Arrays::stream).forEach(System.out::println);
 
         } while (!wfc.checkIsAllCollapsed());
     }
