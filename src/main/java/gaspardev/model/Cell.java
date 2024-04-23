@@ -79,18 +79,6 @@ public class Cell implements Serializable, Comparable<Cell> {
         return this.posY;
     }
 
-    public void setNeighbors(Cell[] neighbors) {
-        try {
-            if (neighbors.length == 4) {
-                this.neighbors = neighbors;
-            } else {
-                throw new Exception("La lista de vecinos debe ser de 4 elementos");
-            }
-        } catch (Exception e) {
-            System.out.println("Error al cargar los vecinos: " + e.getMessage());
-        }
-    }
-
     public Tile[] getEntropy() {
         return this.entropy;
     }
@@ -112,6 +100,31 @@ public class Cell implements Serializable, Comparable<Cell> {
         UP, RIGHT, DOWN, LEFT
     }
 
+    /**
+     * Sets the neighbors of the current cell.
+     *
+     * @param neighbors an array of Cell objects representing the neighbors of the
+     *                  current cell
+     * @throws Exception if the length of the neighbors array is not equal to 4
+     */
+    public void setNeighbors(Cell[] neighbors) {
+        try {
+            if (neighbors.length == 4) {
+                this.neighbors = neighbors;
+            } else {
+                throw new Exception("La lista de vecinos debe ser de 4 elementos");
+            }
+        } catch (Exception e) {
+            System.out.println("Error al cargar los vecinos: " + e.getMessage());
+        }
+    }
+
+    /**
+     * A description of the entire Java function.
+     *
+     * @param cell description of parameter
+     * @return description of return value
+     */
     public Direction getDirection(Cell cell) {
 
         int vecY = cell.getPosY() - this.getPosY();
@@ -131,6 +144,11 @@ public class Cell implements Serializable, Comparable<Cell> {
 
     }
 
+    /**
+     * Updates the entropy of the cell by removing the specified tile.
+     *
+     * @param deleteEntropy the tile to be removed from the entropy array
+     */
     private void updateEntropie(Tile deleteEntropy) {
         this.entropy = Arrays.stream(this.entropy).filter(tile -> tile != deleteEntropy).toArray(Tile[]::new);
     }
@@ -149,6 +167,12 @@ public class Cell implements Serializable, Comparable<Cell> {
 
     }
 
+    /**
+     * Retrieves the best tile from the entropy array based on its weight.
+     *
+     * @return The best tile from the entropy array, or null if the entropy array is
+     *         empty.
+     */
     public Tile getTheBestTile() {
         Random random = new Random();
         int randomIndex = random.nextInt(this.entropy.length - 1);

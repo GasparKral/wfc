@@ -49,17 +49,6 @@ public class Tile implements Serializable {
         return this.conexions.getRotations();
     }
 
-    public String getConexions() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        for (int i = 0; i < this.conexions.getRotations().length; i++) {
-            sb.append(conexions.getRotations()[i]);
-            sb.append(", ");
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
     public void setConexcions(int[] conexcions) {
         this.conexions.setRotations(conexcions);
     }
@@ -72,6 +61,30 @@ public class Tile implements Serializable {
         this.weight = weight;
     }
 
+    /**
+     * A method to generate a string representation of the connections of the tile.
+     *
+     * @return the string representation of the connections
+     */
+    public String getConexions() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (int i = 0; i < this.conexions.getRotations().length; i++) {
+            sb.append(conexions.getRotations()[i]);
+            sb.append(", ");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    /**
+     * Compares two Tile objects and checks if their image and rotation are equal.
+     *
+     * @param t1 the first Tile object to compare
+     * @param t2 the second Tile object to compare
+     * @return true if the image and rotation of t1 and t2 are equal, false
+     *         otherwise
+     */
     public static boolean compare(Tile t1, Tile t2) {
         if (t1.getImg().equalsIgnoreCase(t2.getImg()) && t1.getRotation() == t2.getRotation()) {
             return true;
@@ -80,6 +93,13 @@ public class Tile implements Serializable {
         }
     }
 
+    /**
+     * Checks if the given tile can connect to this tile in the specified direction.
+     *
+     * @param t         the tile to check connection with
+     * @param direction the direction to check connection in
+     * @return true if the tiles can connect, false otherwise
+     */
     public boolean checkIfCanConect(Tile t, Direction direction) {
 
         switch (direction) {
@@ -115,6 +135,12 @@ public class Tile implements Serializable {
 
     }
 
+    /**
+     * Rotates the tile by updating the connections.
+     *
+     * @param None
+     * @return None
+     */
     public void rotateTile() {
 
         ArrayList<Integer> tempArr = new ArrayList<>();

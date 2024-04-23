@@ -49,6 +49,12 @@ public class Grid implements Iterable<Cell>, Serializable {
         return this.spaces[x][y];
     }
 
+    /**
+     * Fills the spaces in the grid with cells.
+     *
+     * @param paramName description of parameter
+     * @return description of return value
+     */
     public void fillSpaces() {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -57,6 +63,12 @@ public class Grid implements Iterable<Cell>, Serializable {
         }
     }
 
+    /**
+     * Connects the neighbors of each cell in the grid.
+     *
+     * @param None
+     * @return None
+     */
     public void connectNeighbors() {
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
@@ -71,6 +83,15 @@ public class Grid implements Iterable<Cell>, Serializable {
         }
     }
 
+    /**
+     * Retrieves the cell at the specified row and column if it exists within the
+     * grid, otherwise returns null.
+     *
+     * @param row the row index of the cell
+     * @param col the column index of the cell
+     * @return the cell at the specified row and column if it exists within the
+     *         grid, otherwise null
+     */
     private Cell getCellOrNull(int row, int col) {
         return row >= 0 && row < height && col >= 0 && col < width ? spaces[row][col] : null;
     }

@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
+//import javafx.scene.layout.Region;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
@@ -72,12 +72,16 @@ public class MapViewController {
 
     private void draw() {
 
+        // Limpiar el y setear el estado base
+
         wfc.clearEntropie();
         wfc.fillEntropie();
         wfc.rotations();
 
         do {
 
+            // Obtener la celda con menor entropia, colapsarla con el mejor valor y
+            // actualizar los vecinos
             Cell tempCell = wfc.getCellWithMinimumEntropy().colapseTileR();
             tempCell.updateNeighborsValue();
 
@@ -101,9 +105,9 @@ public class MapViewController {
         } while (!wfc.checkIsAllCollapsed());
     }
 
-    private void clearGrid() {
+    // private void clearGrid() {
 
-        grid.getChildren().clear();
-    }
+    // grid.getChildren().clear();
+    // }
 
 }
