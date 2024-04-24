@@ -41,6 +41,7 @@ public class MapViewController {
             @Override
             protected Void call() throws Exception {
                 wfc.clearEntropie();
+                wfc.resetColapsedFalse();
                 wfc.fillEntropie();
                 wfc.rotations();
 

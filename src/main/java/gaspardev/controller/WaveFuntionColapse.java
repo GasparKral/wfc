@@ -296,6 +296,16 @@ public class WaveFuntionColapse {
         }
     }
 
+    public void resetColapsedFalse() {
+
+        Cell[][] cells = this.grid.getSpaces();
+        for (Cell[] cellRow : cells) {
+            for (Cell cell : cellRow) {
+                cell.setColapsed(false);
+            }
+        }
+    }
+
     private static final Tile[] NO_TILES = new Tile[0];
 
 }
