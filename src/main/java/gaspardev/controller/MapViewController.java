@@ -5,8 +5,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
-//import javafx.scene.layout.Region;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
@@ -18,6 +18,8 @@ public class MapViewController {
 
     @FXML
     AnchorPane anchorPane;
+    @FXML
+    ScrollPane scrollPane;
     @FXML
     GridPane grid = new GridPane();
     @FXML
@@ -47,14 +49,9 @@ public class MapViewController {
 
         this.grid.gridLinesVisibleProperty().setValue(true);
 
-        // Agregar la grid al anchorPane
-        anchorPane.getChildren().add(grid);
-        AnchorPane.setLeftAnchor(grid, (anchorPane.getWidth() - wfc.getGrid().getWidth() * 20) / 2);
-        AnchorPane.setTopAnchor(grid, (anchorPane.getHeight() - wfc.getGrid().getHeight() * 20) / 2);
+        // Agregar el grid al scrollPane
 
-        // Centrar el botón en el anchorPane
-        AnchorPane.setLeftAnchor(buttonMap, (anchorPane.getWidth() - buttonMap.getPrefWidth()) / 2);
-        AnchorPane.setTopAnchor(buttonMap, (anchorPane.getHeight() - buttonMap.getPrefHeight()) / 2);
+        scrollPane.setContent(grid);
 
         // Draw
         draw();
