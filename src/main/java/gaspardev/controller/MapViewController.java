@@ -79,7 +79,7 @@ public class MapViewController {
                 do {
 
                     if (updateQueue.isEmpty()) {
-                        Thread.sleep(50);
+                        Thread.sleep(20);
                     }
 
                     Cell tempCell = updateQueue.take();
