@@ -119,28 +119,26 @@ public class MapViewController {
 
         buttonMap.setVisible(false);
 
-        // Obtener el tamaño de la grid
-        int gridWidth = wfc.getGrid().getWidth();
-        int gridHeight = wfc.getGrid().getHeight();
-
-        // Crear las celdas de la grid
-        for (int i = 0; i < gridWidth; i++) {
-            for (int j = 0; j < gridHeight; j++) {
-                Rectangle space = new Rectangle(20, 20);
-                grid.add(space, i, j);
+        // Get grid size and create grid cells
+        int cols = wfc.getGrid().getWidth();
+        int rows = wfc.getGrid().getHeight();
+        for (int col = 0; col < cols; col++) {
+            for (int row = 0; row < rows; row++) {
+                grid.add(new Rectangle(20, 20), col, row);
             }
         }
 
-        this.grid.gridLinesVisibleProperty().setValue(true);
-
-        // Agregar el grid al scrollPane
-
+        // Add grid to scroll pane
         scrollPane.setContent(grid);
 
         // Draw
+        initTasks();
+        executeTasks();
+    }
+
+    private void initTasks() {
         initWfcTask();
         initDrawTask();
-        executeTasks();
     }
 
 }
