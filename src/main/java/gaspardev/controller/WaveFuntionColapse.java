@@ -10,7 +10,6 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -146,8 +145,8 @@ public class WaveFuntionColapse {
         loadTilesConexions();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(conexionsFile))) {
-            List<Conexion> conexions = new ArrayList<>();
-            List<Short> weightS = new ArrayList<>();
+            List<Conexion> conexions = new ArrayList<>(tilesFiles.length);
+            List<Short> weightS = new ArrayList<>(tilesFiles.length);
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
@@ -161,15 +160,11 @@ public class WaveFuntionColapse {
 
             this.tiles = new Tile[tilesFiles.length * conexions.get(0).getSegments()];
             int index = 0;
-            int filesLength = 0;
-            for (File pattern : tilesFiles) {
+            for (int i = 0; i < tilesFiles.length; i++) {
                 for (int rotation = 0; rotation < conexions.get(0).getSegments(); rotation++) {
-                    this.tiles[index] = new Tile(rotation, pattern.getName(), conexions.get(filesLength),
-                            weightS.get(filesLength));
+                    this.tiles[index] = new Tile(rotation, tilesFiles[i].getName(), conexions.get(i), weightS.get(i));
                     index++;
                 }
-                filesLength++;
-
             }
 
         } catch (Exception e) {
@@ -205,18 +200,22 @@ public class WaveFuntionColapse {
     /**
      * Sets the entropy of each cell in the grid to the tiles array.
      *
-     * This function uses the Arrays.stream() method to create a stream of cells
-     * in the grid. It then uses the flatMap() method to flatten the stream of
-     * cells into a stream of individual cells. Finally, it uses the forEach()
-     * method to iterate over each cell and set its entropy to the tiles array.
+     * This function iterates over each cell in the grid directly,
+     * avoiding the overhead of creating a stream and flattening it.
      *
      * @param None This function does not take any parameters.
      * @return None This function does not return any value.
      */
     public void fillEntropie() {
-        Arrays.stream(this.grid.getSpaces())
-                .flatMap(Arrays::stream)
-                .forEach(cell -> cell.setEntropy(this.tiles));
+
+        Cell[][] cells = this.grid.getSpaces();
+        for (int i = 0; i < cells.length; i++) {
+            Cell[] cellRow = cells[i];
+            for (int j = 0; j < cellRow.length; j++) {
+                Cell cell = cellRow[j];
+                cell.setEntropy(this.tiles);
+            }
+        }
     }
 
     /**
@@ -225,11 +224,18 @@ public class WaveFuntionColapse {
      * @return the cell with the minimum entropy
      */
     public Cell getCellWithMinimumEntropy() {
-        return Arrays.stream(this.grid.getSpaces())
-                .flatMap(Arrays::stream)
-                .filter(cell -> !cell.isColapsed())
-                .min(Comparator.comparingInt(Cell::getEntropyLenght))
-                .get();
+        Cell[][] cells = this.grid.getSpaces();
+        int minEntropyLenght = Integer.MAX_VALUE;
+        Cell minEntropyCell = null;
+        for (Cell[] cellRow : cells) {
+            for (Cell cell : cellRow) {
+                if (!cell.isColapsed() && cell.getEntropyLenght() < minEntropyLenght) {
+                    minEntropyLenght = cell.getEntropyLenght();
+                    minEntropyCell = cell;
+                }
+            }
+        }
+        return minEntropyCell;
     }
 
     /**
@@ -239,10 +245,13 @@ public class WaveFuntionColapse {
      */
     public boolean checkIsAllCollapsed() {
         boolean isAllCollapsed = true;
-        for (Cell[] cell : this.grid.getSpaces()) {
-            for (Cell c : cell) {
-                if (!c.isColapsed()) {
-                    return isAllCollapsed = false;
+        Cell[][] cells = this.grid.getSpaces();
+        for (int i = 0; i < cells.length && isAllCollapsed; i++) {
+            Cell[] cellRow = cells[i];
+            for (int j = 0; j < cellRow.length && isAllCollapsed; j++) {
+                if (!cellRow[j].isColapsed()) {
+                    isAllCollapsed = false;
+                    break;
                 }
             }
         }
@@ -260,23 +269,33 @@ public class WaveFuntionColapse {
      * @return true if the grid has empty cells, false otherwise
      */
     public boolean restartGrid() {
-        boolean hasEmptyCells = Arrays.stream(grid.getSpaces())
-                .flatMap(Arrays::stream)
-                .anyMatch(cell -> cell.getEntropy().length == 0);
+        Cell[][] cells = this.grid.getSpaces();
+        for (Cell[] cellRow : cells) {
+            for (Cell cell : cellRow) {
+                if (cell.getEntropy().length == 0) {
+                    return true;
+                }
+            }
+        }
 
-        return hasEmptyCells;
+        return false;
     }
 
     /**
-     * Clears the entropy of each cell in the grid.
+     * Clears the entropy of each cell in the grid without creating streams.
      *
      * @param None This function does not take any parameters.
      * @return None This function does not return any value.
      */
     public void clearEntropie() {
-        Arrays.stream(this.grid.getSpaces())
-                .flatMap(Arrays::stream)
-                .forEach(cell -> cell.setEntropy(new Tile[0]));
+        Cell[][] cells = this.grid.getSpaces();
+        for (Cell[] cellRow : cells) {
+            for (Cell cell : cellRow) {
+                cell.setEntropy(NO_TILES);
+            }
+        }
     }
+
+    private static final Tile[] NO_TILES = new Tile[0];
 
 }

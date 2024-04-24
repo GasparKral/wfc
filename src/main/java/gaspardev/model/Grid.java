@@ -56,10 +56,11 @@ public class Grid implements Iterable<Cell>, Serializable {
      * @return description of return value
      */
     public void fillSpaces() {
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                this.spaces[i][j] = new Cell(i, j);
-            }
+        Cell[][] spaces = this.spaces;
+        for (int i = 0, n = width * height; i < n; i++) {
+            int row = i / width;
+            int col = i % width;
+            spaces[row][col] = new Cell(row, col);
         }
     }
 
@@ -70,15 +71,18 @@ public class Grid implements Iterable<Cell>, Serializable {
      * @return None
      */
     public void connectNeighbors() {
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                Cell cell = spaces[row][col];
-                cell.setNeighbors(new Cell[] {
-                        getCellOrNull(row, col - 1),
-                        getCellOrNull(row + 1, col),
-                        getCellOrNull(row, col + 1),
-                        getCellOrNull(row - 1, col)
-                });
+        for (int i = 0; i < spaces.length; i++) {
+            Cell[] row = spaces[i];
+            for (int j = 0; j < row.length; j++) {
+                Cell cell = row[j];
+                if (cell != null) {
+                    cell.setNeighbors(new Cell[] {
+                            getCellOrNull(i, j - 1),
+                            getCellOrNull(i + 1, j),
+                            getCellOrNull(i, j + 1),
+                            getCellOrNull(i - 1, j)
+                    });
+                }
             }
         }
     }

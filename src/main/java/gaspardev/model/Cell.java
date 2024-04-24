@@ -87,6 +87,10 @@ public class Cell implements Serializable, Comparable<Cell> {
         return cell.getEntropy().length;
     }
 
+    public int getEntropyLenght() {
+        return this.entropy.length;
+    }
+
     public void setEntropy(Tile[] entropy) {
         this.entropy = entropy;
     }

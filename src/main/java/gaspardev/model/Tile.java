@@ -1,9 +1,9 @@
 package gaspardev.model;
 
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.stream.IntStream;
+
 import gaspardev.model.Cell.Direction;
-import java.util.ArrayList;
 
 public class Tile implements Serializable {
 
@@ -67,16 +67,12 @@ public class Tile implements Serializable {
      * @return the string representation of the connections
      */
     public String getConexions() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        for (int i = 0; i < this.conexions.getRotations().length; i++) {
-            sb.append(conexions.getRotations()[i]);
-            if (i < this.conexions.getRotations().length - 1) {
-                sb.append(", ");
-            }
-        }
-        sb.append("]");
-        return sb.toString();
+        int[] conexions = this.conexions.getRotations();
+        return "[" + String.join(", ",
+                IntStream.range(0, conexions.length)
+                        .mapToObj(i -> String.valueOf(conexions[i]))
+                        .toArray(String[]::new))
+                + "]";
     }
 
     /**
@@ -88,12 +84,10 @@ public class Tile implements Serializable {
      *         otherwise
      */
     public static boolean compare(Tile t1, Tile t2) {
-        if (t1.getImg().equalsIgnoreCase(t2.getImg()) && t1.getRotation() == t2.getRotation()) {
-            return true;
-        } else {
-            return false;
-        }
+        return t1.rotation == t2.rotation &&
+               (t1.img == t2.img || t1.img != null && t1.img.equalsIgnoreCase(t2.img));
     }
+
 
     /**
      * Checks if the given tile can connect to this tile in the specified direction.
@@ -145,14 +139,12 @@ public class Tile implements Serializable {
      */
     public void rotateTile() {
 
-        ArrayList<Integer> tempArr = new ArrayList<>();
-        for (int i = 0; i < this.conexions.getRotations().length; i++) {
-            tempArr.add(this.conexions.getRotations()[i]);
+        int[] returnedCon = new int[this.conexions.getRotations().length];
+        for (int i = 0, j = this.rotation; j < returnedCon.length; i++, j++) {
+            returnedCon[j] = this.conexions.getRotations()[i];
         }
-        Collections.rotate(tempArr, this.rotation);
-        int[] returnedCon = new int[tempArr.size()];
-        for (int i = 0; i < tempArr.size(); i++) {
-            returnedCon[i] = tempArr.get(i);
+        for (int i = 0; i < this.rotation; i++) {
+            returnedCon[i] = this.conexions.getRotations()[returnedCon.length - this.rotation + i];
         }
         this.conexions = new Conexion(returnedCon);
 
