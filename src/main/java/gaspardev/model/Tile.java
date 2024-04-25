@@ -85,9 +85,8 @@ public class Tile implements Serializable {
      */
     public static boolean compare(Tile t1, Tile t2) {
         return t1.rotation == t2.rotation &&
-               (t1.img == t2.img || t1.img != null && t1.img.equalsIgnoreCase(t2.img));
+                (t1.img == t2.img || t1.img != null && t1.img.equalsIgnoreCase(t2.img));
     }
-
 
     /**
      * Checks if the given tile can connect to this tile in the specified direction.

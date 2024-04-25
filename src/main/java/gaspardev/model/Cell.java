@@ -113,11 +113,7 @@ public class Cell implements Serializable, Comparable<Cell> {
      */
     public void setNeighbors(Cell[] neighbors) {
         try {
-            if (neighbors.length == 4) {
-                this.neighbors = neighbors;
-            } else {
-                throw new Exception("La lista de vecinos debe ser de 4 elementos");
-            }
+            this.neighbors = neighbors;
         } catch (Exception e) {
             System.out.println("Error al cargar los vecinos: " + e.getMessage());
         }

@@ -1,6 +1,8 @@
 package gaspardev.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.io.Serializable;
 
 public class Grid implements Iterable<Cell>, Serializable {
@@ -12,7 +14,6 @@ public class Grid implements Iterable<Cell>, Serializable {
     public Grid() {
         width = 50;
         height = 50;
-        this.spaces = new Cell[width][height];
     }
 
     public Grid(int width, int height) {
@@ -52,36 +53,55 @@ public class Grid implements Iterable<Cell>, Serializable {
     /**
      * Fills the spaces in the grid with cells.
      *
-     * @param paramName description of parameter
-     * @return description of return value
+     * This function initializes each cell in the grid with its corresponding row
+     * and column indices.
+     * It iterates over each row and column in the grid and creates a new Cell
+     * object with the current indices.
+     * The new Cell object is then assigned to the corresponding position in the
+     * grid.
+     *
+     * @param None This function does not take any parameters.
+     * @return None This function does not return any value.
      */
     public void fillSpaces() {
-        Cell[][] spaces = this.spaces;
-        for (int i = 0, n = width * height; i < n; i++) {
-            int row = i / width;
-            int col = i % width;
-            spaces[row][col] = new Cell(row, col);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                this.spaces[x][y] = new Cell(x, y);
+            }
         }
     }
 
     /**
      * Connects the neighbors of each cell in the grid.
      *
-     * @param None
-     * @return None
+     * This function iterates over each cell in the grid and connects it with its
+     * neighbors. It checks the cells to the left, right, above, and below the
+     * current cell and adds them to the list of neighbors. The neighbors are
+     * then set using the `setNeighbors` method of the `Cell` class.
+     *
+     * @return void
      */
     public void connectNeighbors() {
         for (int i = 0; i < spaces.length; i++) {
-            Cell[] row = spaces[i];
-            for (int j = 0; j < row.length; j++) {
-                Cell cell = row[j];
+            for (int j = 0; j < spaces[i].length; j++) {
+                Cell cell = spaces[i][j];
                 if (cell != null) {
-                    cell.setNeighbors(new Cell[] {
-                            getCellOrNull(i, j - 1),
-                            getCellOrNull(i + 1, j),
-                            getCellOrNull(i, j + 1),
-                            getCellOrNull(i - 1, j)
-                    });
+                    List<Cell> neighbors = new ArrayList<>();
+
+                    if (j - 1 >= 0) {
+                        neighbors.add(getCellOrNull(i, j - 1));
+                    }
+                    if (i + 1 < spaces.length) {
+                        neighbors.add(getCellOrNull(i + 1, j));
+                    }
+                    if (j + 1 < spaces[i].length) {
+                        neighbors.add(getCellOrNull(i, j + 1));
+                    }
+                    if (i - 1 >= 0) {
+                        neighbors.add(getCellOrNull(i - 1, j));
+                    }
+
+                    cell.setNeighbors(neighbors.toArray(new Cell[0]));
                 }
             }
         }
