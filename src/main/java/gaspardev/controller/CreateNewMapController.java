@@ -19,8 +19,6 @@ public class CreateNewMapController {
     @FXML
     TextField inputWidth;
     @FXML
-    TextField inputHeight;
-    @FXML
     TextField currentTilesDir;
     @FXML
     TextField currentDirConexions;
@@ -93,31 +91,33 @@ public class CreateNewMapController {
     }
 
     @FXML
-    public void goNewMap(ActionEvent event) {
-        try {
-            if (!isEmpty(inputHeight.getText()) && !isEmpty(inputWidth.getText())) {
-                wfc.setDimensions(Integer.parseInt(inputWidth.getText()), Integer.parseInt(inputHeight.getText()));
+    public void goNewMap(ActionEvent event) throws Exception {
+
+        if (!isEmpty(inputWidth.getText())) {
+            try {
+                wfc.setDimensions(Integer.parseInt(inputWidth.getText()), Integer.parseInt(inputWidth.getText()));
                 wfc.generateTilesRotations();
                 wfc.getGrid().fillSpaces();
                 wfc.getGrid().connectNeighbors();
-            } else {
-                errorShowLabel.setText("Error al crear el mapa, faltan las dimensiones o error al cargar información");
-                // throw new Exception("Error al crear el mapa, faltan las dimensiones");
+            } catch (Exception e) {
+                throw new Exception("Error al dimensionar el mapa o al cargar los patrones");
             }
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MapView.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setMaximized(true);
-            stage.show();
 
-            MapViewController controller = loader.getController();
-            controller.setInitial(wfc);
-
-        } catch (Exception e) {
-            e.getStackTrace();
+        } else {
+            errorShowLabel.setText("Error al crear el mapa, faltan las dimensiones o error al cargar información");
+            throw new Exception("Los datos no son correctos");
         }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MapView.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setMaximized(true);
+        stage.show();
+
+        MapViewController controller = loader.getController();
+        controller.setInitial(wfc);
+
     }
 
     public static boolean isEmpty(String str) {

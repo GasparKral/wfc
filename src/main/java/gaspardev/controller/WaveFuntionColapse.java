@@ -296,6 +296,12 @@ public class WaveFuntionColapse {
         }
     }
 
+    /**
+     * Resets the colapsed state of all cells in the grid to false.
+     *
+     * @param None This function does not take any parameters.
+     * @return This function does not return anything.
+     */
     public void resetColapsedFalse() {
 
         Cell[][] cells = this.grid.getSpaces();
