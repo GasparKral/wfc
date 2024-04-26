@@ -198,25 +198,24 @@ public class WaveFuntionColapse {
     }
 
     /**
-     * Checks if the grid has any empty cells by iterating over each cell in the
-     * grid
-     * and checking if its entropy length is 0. Returns true if there are empty
-     * cells,
-     * false otherwise.
+     * Sets the entropy of each cell in the grid to the tiles array.
      *
-     * @return true if the grid has empty cells, false otherwise
+     * This function iterates over each cell in the grid directly,
+     * avoiding the overhead of creating a stream and flattening it.
+     *
+     * @param None This function does not take any parameters.
+     * @return None This function does not return any value.
      */
-    public boolean restartGrid() {
+    public void fillEntropie() {
+
         Cell[][] cells = this.grid.getSpaces();
-        for (Cell[] cellRow : cells) {
-            for (Cell cell : cellRow) {
-                if (cell.getEntropy().length == 0) {
-                    return true;
-                }
+        for (int i = 0; i < cells.length; i++) {
+            Cell[] cellRow = cells[i];
+            for (int j = 0; j < cellRow.length; j++) {
+                Cell cell = cellRow[j];
+                cell.setEntropy(this.tiles);
             }
         }
-
-        return false;
     }
 
     /**
@@ -264,27 +263,6 @@ public class WaveFuntionColapse {
     // #region Draw and Update Entropie
 
     /**
-     * Sets the entropy of each cell in the grid to the tiles array.
-     *
-     * This function iterates over each cell in the grid directly,
-     * avoiding the overhead of creating a stream and flattening it.
-     *
-     * @param None This function does not take any parameters.
-     * @return None This function does not return any value.
-     */
-    public void fillEntropie() {
-
-        Cell[][] cells = this.grid.getSpaces();
-        for (int i = 0; i < cells.length; i++) {
-            Cell[] cellRow = cells[i];
-            for (int j = 0; j < cellRow.length; j++) {
-                Cell cell = cellRow[j];
-                cell.setEntropy(this.tiles);
-            }
-        }
-    }
-
-    /**
      * Returns the cell with the minimum entropy.
      *
      * @return the cell with the minimum entropy
@@ -324,6 +302,28 @@ public class WaveFuntionColapse {
         }
 
         return isAllCollapsed;
+    }
+
+    /**
+     * Checks if the grid has any empty cells by iterating over each cell in the
+     * grid
+     * and checking if its entropy length is 0. Returns true if there are empty
+     * cells,
+     * false otherwise.
+     *
+     * @return true if the grid has empty cells, false otherwise
+     */
+    public boolean restartGrid() {
+        Cell[][] cells = this.grid.getSpaces();
+        for (Cell[] cellRow : cells) {
+            for (Cell cell : cellRow) {
+                if (cell.getEntropy().length == 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 }
