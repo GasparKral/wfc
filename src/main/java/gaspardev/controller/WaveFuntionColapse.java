@@ -235,6 +235,7 @@ public class WaveFuntionColapse {
                 }
             }
         }
+
         return minEntropyCell;
     }
 

@@ -22,6 +22,8 @@ public class MapViewController {
     private Task<Void> drawTask;
     private BlockingQueue<Cell> updateQueue = new LinkedBlockingQueue<>();
 
+    final static int speed = 10;
+
     @FXML
     AnchorPane anchorPane;
     @FXML
@@ -64,7 +66,7 @@ public class MapViewController {
 
                     // Agregar a la cola de actualizaciones
                     updateQueue.add(tempCell);
-
+                    Thread.sleep(speed);
                 } while (!wfc.checkIsAllCollapsed());
 
                 return null;
@@ -84,6 +86,7 @@ public class MapViewController {
                     }
 
                     Cell tempCell = updateQueue.take();
+
                     // Obtener la imagen de la celda
                     String imagePath = wfc.getTileDirRelative().split("resources")[1].concat("\\").replaceAll("\\\\",
                             "/")
@@ -101,7 +104,7 @@ public class MapViewController {
                     Platform.runLater(() -> {
                         grid.add(imageView, tempCell.getPosX(), tempCell.getPosY());
                     });
-
+                    Thread.sleep(speed);
                 } while (!updateQueue.isEmpty());
 
                 return null;
@@ -134,6 +137,9 @@ public class MapViewController {
 
         // Draw
         initTasks();
+        wfcTask.setOnSucceeded(event -> drawTask.run());
+        wfcTask.setOnFailed(event -> drawTask.run());
+        wfcTask.setOnCancelled(event -> drawTask.run());
         executeTasks();
     }
 
