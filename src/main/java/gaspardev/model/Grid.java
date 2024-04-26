@@ -69,7 +69,7 @@ public class Grid implements Iterable<Cell>, Serializable {
         Cell[] cells = new Cell[this.width * this.height];
         for (int i = 0, x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++, i++) {
-                cells[i] = new Cell(x, y, this.height);
+                cells[i] = new Cell(x, y);
             }
         }
         this.spaces = new Cell[this.width][this.height];

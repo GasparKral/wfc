@@ -3,7 +3,6 @@ package gaspardev.model;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Random;
 
 public class Cell implements Serializable, Comparable<Cell> {
 
@@ -11,7 +10,7 @@ public class Cell implements Serializable, Comparable<Cell> {
     private int posY;
     private boolean isColapsed = false;
     private Tile colapsedTile;
-    private Cell[] neighbors = new Cell[4];
+    private Cell[] neighbors;
     private Tile[] entropy;
 
     public Cell() {
@@ -174,8 +173,8 @@ public class Cell implements Serializable, Comparable<Cell> {
      *         empty.
      */
     public Tile getTheBestTile() {
-        Random random = new Random();
-        int randomIndex = random.nextInt(this.entropy.length - 1);
+
+        int randomIndex = (int) (Math.random() * this.entropy.length - 1);
         Tile randomTile = Arrays.stream(
                 this.entropy)
                 .sorted(Comparator.comparingInt(Tile::getWeight).reversed())
