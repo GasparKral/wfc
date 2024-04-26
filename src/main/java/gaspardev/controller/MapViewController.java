@@ -132,14 +132,15 @@ public class MapViewController {
             }
         }
 
-        scrollPane.setContent(grid);
-
         // Draw
         initTasks();
         executeTasks();
 
         drawTask.setOnSucceeded(event -> {
             anchorPane.getChildren().add(newMap);
+
+            AnchorPane.setTopAnchor(newMap, 10.0);
+            AnchorPane.setRightAnchor(newMap, 10.0);
             newMap.setVisible(true);
             newMap.setOnAction(e -> {
                 try {
