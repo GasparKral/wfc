@@ -174,14 +174,14 @@ public class Cell implements Serializable, Comparable<Cell> {
      */
     public Tile getTheBestTile() {
 
-        int randomIndex = (int) (Math.random() * this.entropy.length - 1);
-        Tile randomTile = Arrays.stream(
+        return Arrays.stream(
                 this.entropy)
                 .sorted(Comparator.comparingInt(Tile::getWeight).reversed())
-                .skip(randomIndex)
+                .skip((int) (Math.random() * this.entropy.length
+                        - 1))
                 .findFirst()
-                .orElse(null);
-        return randomTile;
+                .get();
+
     }
 
     @Override
