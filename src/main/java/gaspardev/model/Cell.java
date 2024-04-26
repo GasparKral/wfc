@@ -99,10 +99,6 @@ public class Cell implements Serializable, Comparable<Cell> {
         this.colapsedTile = colapsTile;
     }
 
-    public enum Direction {
-        UP, RIGHT, DOWN, LEFT
-    }
-
     /**
      * Sets the neighbors of the current cell.
      *
@@ -116,6 +112,10 @@ public class Cell implements Serializable, Comparable<Cell> {
         } catch (Exception e) {
             System.out.println("Error al cargar los vecinos: " + e.getMessage());
         }
+    }
+
+    public enum Direction {
+        UP, RIGHT, DOWN, LEFT
     }
 
     /**

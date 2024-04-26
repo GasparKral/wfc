@@ -96,38 +96,8 @@ public class Tile implements Serializable {
      * @return true if the tiles can connect, false otherwise
      */
     public boolean checkIfCanConect(Tile t, Direction direction) {
-
-        switch (direction) {
-            case UP:
-                if (this.conexions.getRotations()[0] == t.conexions.getRotations()[2]) {
-                    return true;
-                } else {
-                    return false;
-                }
-            case DOWN:
-                if (this.conexions.getRotations()[2] == t.conexions.getRotations()[0]) {
-                    return true;
-                } else {
-                    return false;
-                }
-            case LEFT:
-                if (this.conexions.getRotations()[3] == t.conexions.getRotations()[1]) {
-                    return true;
-                } else {
-                    return false;
-                }
-            case RIGHT:
-                if (this.conexions.getRotations()[1] == t.conexions.getRotations()[3]) {
-                    return true;
-                } else {
-                    return false;
-                }
-            default:
-                break;
-        }
-
-        return false;
-
+        int index = direction.ordinal();
+        return this.conexions.getRotations()[index] == t.conexions.getRotations()[(index + 2) % 4];
     }
 
     /**

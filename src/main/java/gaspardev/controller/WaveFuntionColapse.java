@@ -167,35 +167,14 @@ public class WaveFuntionColapse {
                 }
             }
 
+            Arrays.stream(this.tiles).forEach(t -> t.rotateTile());
+
         } catch (Exception e) {
             e.getCause();
         }
     }
 
     // #region Set Initial State
-
-    /**
-     * Rotates the tiles in each cell of the grid.
-     *
-     * This function iterates over each row of cells in the grid and then each cell
-     * within that row.
-     * For each cell, it retrieves the entropy array and uses the Arrays.stream()
-     * method to create a stream of the elements.
-     * The forEach() method is then used to iterate over each element in the stream
-     * and call the rotateTile() method on it.
-     * This effectively rotates each tile in the cell.
-     *
-     * @param None This function does not take any parameters.
-     * @return None This function does not return any value.
-     */
-    public void rotations() {
-
-        for (Cell[] cellRow : this.grid.getSpaces()) {
-            for (Cell cell : cellRow) {
-                Arrays.stream(cell.getEntropy()).forEach(t -> t.rotateTile());
-            }
-        }
-    }
 
     /**
      * Sets the entropy of each cell in the grid to the tiles array.
@@ -256,7 +235,6 @@ public class WaveFuntionColapse {
         clearEntropie();
         resetColapsedFalse();
         fillEntropie();
-        rotations();
 
     }
 

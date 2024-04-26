@@ -132,6 +132,8 @@ public class MapViewController {
             }
         }
 
+        scrollPane.setContent(grid);
+
         // Draw
         initTasks();
         executeTasks();
