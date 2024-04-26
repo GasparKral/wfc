@@ -22,7 +22,7 @@ public class MapViewController {
     private Task<Void> drawTask;
     private BlockingQueue<Cell> updateQueue = new LinkedBlockingQueue<>();
 
-    final static int speed = 10;
+    final static int speed = 5;
 
     @FXML
     AnchorPane anchorPane;
@@ -32,6 +32,8 @@ public class MapViewController {
     GridPane grid = new GridPane();
     @FXML
     Button buttonMap;
+    @FXML
+    Button newMap = new Button("Generate new map");
 
     @FXML
     public void setInitial(WaveFuntionColapse wfc) {
@@ -42,10 +44,8 @@ public class MapViewController {
         wfcTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                wfc.clearEntropie();
-                wfc.resetColapsedFalse();
-                wfc.fillEntropie();
-                wfc.rotations();
+
+                wfc.setInitial();
 
                 do {
                     Cell tempCell = wfc.getCellWithMinimumEntropy().colapseTileR();
@@ -132,15 +132,59 @@ public class MapViewController {
             }
         }
 
-        // Add grid to scroll pane
         scrollPane.setContent(grid);
 
         // Draw
         initTasks();
-        wfcTask.setOnSucceeded(event -> drawTask.run());
-        wfcTask.setOnFailed(event -> drawTask.run());
-        wfcTask.setOnCancelled(event -> drawTask.run());
         executeTasks();
+
+        drawTask.setOnSucceeded(event -> {
+            anchorPane.getChildren().add(newMap);
+            newMap.setVisible(true);
+            newMap.setOnAction(e -> {
+                try {
+                    newMapDraw();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+        });
+    }
+
+    private void newMapDraw() throws Exception {
+
+        if (newMap.isVisible()) {
+            newMap.setVisible(false);
+        }
+
+        // Limpiar la cuadrícula y dibujar de nuevo
+
+        grid.getChildren().clear();
+
+        // Get grid size and create grid cells
+        int cols = wfc.getGrid().getWidth();
+        int rows = wfc.getGrid().getHeight();
+        for (int col = 0; col < cols; col++) {
+            for (int row = 0; row < rows; row++) {
+                grid.add(new Rectangle(20, 20), col, row);
+            }
+        }
+
+        // Draw
+
+        initTasks();
+        executeTasks();
+
+        drawTask.setOnSucceeded(event -> {
+            newMap.setVisible(true);
+            newMap.setOnAction(e -> {
+                try {
+                    newMapDraw();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+        });
     }
 
     private void initTasks() {

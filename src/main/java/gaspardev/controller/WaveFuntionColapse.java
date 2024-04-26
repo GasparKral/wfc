@@ -172,6 +172,8 @@ public class WaveFuntionColapse {
         }
     }
 
+    // #region Set Initial State
+
     /**
      * Rotates the tiles in each cell of the grid.
      *
@@ -193,6 +195,70 @@ public class WaveFuntionColapse {
                 Arrays.stream(cell.getEntropy()).forEach(t -> t.rotateTile());
             }
         }
+    }
+
+    /**
+     * Checks if the grid has any empty cells by iterating over each cell in the
+     * grid
+     * and checking if its entropy length is 0. Returns true if there are empty
+     * cells,
+     * false otherwise.
+     *
+     * @return true if the grid has empty cells, false otherwise
+     */
+    public boolean restartGrid() {
+        Cell[][] cells = this.grid.getSpaces();
+        for (Cell[] cellRow : cells) {
+            for (Cell cell : cellRow) {
+                if (cell.getEntropy().length == 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Resets the colapsed state of all cells in the grid to false.
+     *
+     * @param None This function does not take any parameters.
+     * @return This function does not return anything.
+     */
+    private void resetColapsedFalse() {
+
+        Cell[][] cells = this.grid.getSpaces();
+        for (Cell[] cellRow : cells) {
+            for (Cell cell : cellRow) {
+                cell.setColapsed(false);
+            }
+        }
+    }
+
+    /**
+     * Clears the entropy of each cell in the grid without creating streams.
+     *
+     * @param None This function does not take any parameters.
+     * @return None This function does not return any value.
+     */
+    private void clearEntropie() {
+        Cell[][] cells = this.grid.getSpaces();
+        for (Cell[] cellRow : cells) {
+            for (Cell cell : cellRow) {
+                cell.setEntropy(NO_TILES);
+            }
+        }
+    }
+
+    private static final Tile[] NO_TILES = new Tile[0];
+
+    public void setInitial() {
+
+        clearEntropie();
+        resetColapsedFalse();
+        fillEntropie();
+        rotations();
+
     }
 
     // #region Draw and Update Entropie
@@ -259,60 +325,5 @@ public class WaveFuntionColapse {
 
         return isAllCollapsed;
     }
-
-    /**
-     * Checks if the grid has any empty cells by iterating over each cell in the
-     * grid
-     * and checking if its entropy length is 0. Returns true if there are empty
-     * cells,
-     * false otherwise.
-     *
-     * @return true if the grid has empty cells, false otherwise
-     */
-    public boolean restartGrid() {
-        Cell[][] cells = this.grid.getSpaces();
-        for (Cell[] cellRow : cells) {
-            for (Cell cell : cellRow) {
-                if (cell.getEntropy().length == 0) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Clears the entropy of each cell in the grid without creating streams.
-     *
-     * @param None This function does not take any parameters.
-     * @return None This function does not return any value.
-     */
-    public void clearEntropie() {
-        Cell[][] cells = this.grid.getSpaces();
-        for (Cell[] cellRow : cells) {
-            for (Cell cell : cellRow) {
-                cell.setEntropy(NO_TILES);
-            }
-        }
-    }
-
-    /**
-     * Resets the colapsed state of all cells in the grid to false.
-     *
-     * @param None This function does not take any parameters.
-     * @return This function does not return anything.
-     */
-    public void resetColapsedFalse() {
-
-        Cell[][] cells = this.grid.getSpaces();
-        for (Cell[] cellRow : cells) {
-            for (Cell cell : cellRow) {
-                cell.setColapsed(false);
-            }
-        }
-    }
-
-    private static final Tile[] NO_TILES = new Tile[0];
 
 }
