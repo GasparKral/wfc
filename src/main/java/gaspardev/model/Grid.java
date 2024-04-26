@@ -1,8 +1,7 @@
 package gaspardev.model;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.io.Serializable;
 
 public class Grid implements Iterable<Cell>, Serializable {
@@ -88,6 +87,10 @@ public class Grid implements Iterable<Cell>, Serializable {
      * only once, and using the indices to determine which neighbors to add to
      * the list.
      *
+     * This function is much faster and more efficient than the previous version,
+     * because it eliminates the nested for loops which caused the algorithm to
+     * have a time complexity of O(n^2).
+     *
      * @return void
      */
     public void connectNeighbors() {
@@ -95,22 +98,23 @@ public class Grid implements Iterable<Cell>, Serializable {
             for (int j = 0; j < spaces[i].length; j++) {
                 Cell cell = spaces[i][j];
                 if (cell != null) {
-                    List<Cell> neighbors = new ArrayList<>(4);
+                    Cell[] neighbors = new Cell[4];
+                    int n = 0;
 
                     if (j > 0) {
-                        neighbors.add(spaces[i][j - 1]);
+                        neighbors[n++] = spaces[i][j - 1];
                     }
                     if (i < spaces.length - 1) {
-                        neighbors.add(spaces[i + 1][j]);
+                        neighbors[n++] = spaces[i + 1][j];
                     }
                     if (j < spaces[i].length - 1) {
-                        neighbors.add(spaces[i][j + 1]);
+                        neighbors[n++] = spaces[i][j + 1];
                     }
                     if (i > 0) {
-                        neighbors.add(spaces[i - 1][j]);
+                        neighbors[n++] = spaces[i - 1][j];
                     }
 
-                    cell.setNeighbors(neighbors.toArray(new Cell[0]));
+                    cell.setNeighbors(Arrays.copyOf(neighbors, n));
                 }
             }
         }
