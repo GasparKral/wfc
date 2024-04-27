@@ -22,7 +22,7 @@ public class MapViewController {
     private Task<Void> drawTask;
     private BlockingQueue<Cell> updateQueue = new LinkedBlockingQueue<>();
 
-    final static int speed = 5;
+    final static int speed = 10;
 
     @FXML
     AnchorPane anchorPane;
